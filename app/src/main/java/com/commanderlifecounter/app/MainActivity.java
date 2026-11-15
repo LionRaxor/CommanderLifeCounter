@@ -62,8 +62,11 @@ public class MainActivity extends Activity {
         if (fileCallback != null) fileCallback.onReceiveValue(null);
         fileCallback = callback;
         try {
-          Intent intent = params.createIntent();
-          startActivityForResult(intent, FILE_REQUEST);
+          Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+          intent.setType("image/*");
+          intent.addCategory(Intent.CATEGORY_OPENABLE);
+          intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+          startActivityForResult(Intent.createChooser(intent, "Selecteer afbeeldingen"), FILE_REQUEST);
           return true;
         } catch (Exception ex) {
           fileCallback = null;
@@ -77,7 +80,15 @@ public class MainActivity extends Activity {
   @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (requestCode == FILE_REQUEST && fileCallback != null) {
-      fileCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
+      Uri[] selected = null;
+      if (resultCode == RESULT_OK && data != null) {
+        if (data.getClipData() != null) {
+          int n = data.getClipData().getItemCount();
+          selected = new Uri[n];
+          for (int i = 0; i < n; i++) selected[i] = data.getClipData().getItemAt(i).getUri();
+        } else if (data.getData() != null) selected = new Uri[]{data.getData()};
+      }
+      fileCallback.onReceiveValue(selected);
       fileCallback = null;
     }
   }
