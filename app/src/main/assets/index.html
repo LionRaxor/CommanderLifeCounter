@@ -1,0 +1,396 @@
+<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#090a10"><title>Commander Life Counter v44</title><style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#090a10;color:#fff;font-family:system-ui,sans-serif}button,input{font:inherit}button{border:1px solid #626070;background:#292936;color:white;border-radius:11px;padding:9px 13px;cursor:pointer}button:disabled{opacity:.3}.active,.primary{background:#6948bb;border-color:#c4a6ff}#app{height:100dvh;display:flex;flex-direction:column;padding:7px;gap:6px}.bar{display:flex;align-items:center;justify-content:space-between;gap:6px;min-height:36px}.bar strong{font-size:14px}.bar button{padding:6px 11px;font-size:13px}.board{flex:1;min-height:0;display:grid;gap:7px;grid-template-columns:repeat(var(--cols),minmax(0,1fr));grid-template-rows:repeat(var(--rows),minmax(0,1fr))}.tile{position:relative;min-width:0;min-height:0;border-radius:14px;overflow:hidden;border:2px solid #ffffff55;touch-action:none;user-select:none;text-shadow:0 2px 5px #000b}.tile:before{content:"";position:absolute;inset:0;background:linear-gradient(#0004,#0009);pointer-events:none}.tile .name{position:absolute;top:9px;left:10px;z-index:3;font-weight:750;font-size:clamp(12px,2.2vh,18px)}.life{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:850;font-size:clamp(48px,16vh,120px);font-variant-numeric:tabular-nums}.poison{position:absolute;left:9px;bottom:8px;z-index:5;background:#0009;border-radius:20px;padding:3px 8px;font-size:13px}.symbol{position:absolute;right:8px;bottom:7px;z-index:9;width:39px;height:39px;padding:5px;background:#090a11dd;display:grid;place-items:center;border-radius:12px}.symbol.selected{background:#663cb8;box-shadow:0 0 10px #bda2ff}.symbol img{width:27px;height:27px;object-fit:contain}.edit{position:absolute;top:7px;right:7px;z-index:9;border-radius:9px;padding:5px 9px;font-size:13px;background:#10131abf}.preview{position:absolute;top:30%;right:12%;z-index:10;background:#14151fe9;padding:6px;border-radius:8px;font-weight:800}.hidden{display:none!important}.damageSegments{position:absolute;inset:0;display:flex;gap:3px;padding:3px}.segment{position:relative;flex:1;min-width:0;touch-action:none;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(#0005,#000a),var(--bg);border-radius:8px}.segname{font-size:clamp(10px,1.8vh,16px);font-weight:700;max-width:95%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.segnum{font-size:clamp(30px,10vh,76px);font-weight:800}.segnum small{font-size:.35em}.attacker{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#22212ce8;text-align:center;padding:8px;gap:7px;height:100%;font-size:clamp(12px,2vh,18px)}.attacker small{color:#bdb9ce}.footer{display:flex;gap:6px;min-height:36px}.footer button{flex:1;padding:6px;font-size:13px}.setup{height:100%;display:flex;flex-direction:column;gap:12px;padding:10px;overflow:auto}.setup .box{background:#1b1b27;padding:16px;border-radius:16px;max-width:680px;width:100%;margin:auto}.setup h2{margin:0 0 14px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row button{flex:1}.setup input{width:100%;background:#11121a;color:white;border:1px solid #666;border-radius:10px;padding:10px;margin:6px 0}.modalBack{position:fixed;inset:0;z-index:30;background:#000c;display:flex;align-items:center;justify-content:center;padding:12px}.modal{background:#1b1b27;border:1px solid #797089;border-radius:18px;width:min(500px,96vw);max-height:94dvh;overflow:auto;padding:16px}.modal h3{margin:0 0 8px}.cmd{background:#2b2a36;padding:10px;border-radius:12px;margin:9px 0}.mana{width:43px;height:43px;flex:0 0 43px;border-radius:50%;font-weight:800;padding:0;border:3px solid #ffffff22}.mana{position:relative;opacity:.40;filter:saturate(.55);transition:opacity .12s,filter .12s,transform .12s}.mana.on{opacity:1;filter:saturate(1.2);border:3px solid #fff;outline:2px solid #d5b6ff;outline-offset:2px;box-shadow:0 0 0 5px #a47aff33,0 0 18px #bba0ff99;transform:scale(1.04)}.selectionSummary{display:block;margin-top:11px;color:#fff;font-weight:650;font-size:13px}.hint{color:#b5b0c3;font-size:12px}.profilePanel{background:#12121d;border:1px solid #484257;border-radius:12px;padding:12px;margin:10px 0}.profilePanel select{min-width:0;flex:1;background:#10101b;color:white;border:1px solid #777;border-radius:9px;padding:9px}.profilePanel .row button{flex:0 0 auto}.profilePanel hr{border:0;border-top:1px solid #555;margin:12px 0}.modal .row{margin:8px 0}.modal .row button{flex:unset}.modal .bottom{display:flex;justify-content:flex-end;gap:8px;position:sticky;bottom:-16px;background:#1b1b27;padding:10px 0}.portrait .board{grid-template-columns:repeat(var(--cols),minmax(0,1fr));grid-template-rows:repeat(var(--rows),minmax(0,1fr))}.portrait .life{font-size:clamp(48px,11vw,90px)}.portrait .segnum{font-size:clamp(25px,8vw,54px)}@media(max-height:440px){.bar{min-height:28px}.footer{min-height:30px}.symbol{width:32px;height:32px}.symbol img{width:23px;height:23px}.tile .name{font-size:12px}.poison{font-size:11px}.life{font-size:clamp(42px,15vh,85px)}}
+.poisonLife{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none;background:linear-gradient(135deg,#123b29dd,#153c2dcc)}.poisonCount{font-weight:850;font-size:clamp(42px,14vh,110px);color:#b6ffbd}.poisonCount small{font-size:.28em;color:#e5ffe7}.tile:has(.poisonLife){border-color:#6bdc87}.poisonLife .preview{color:white}@media(max-height:440px){.poisonCount{font-size:clamp(40px,13vh,80px)}}
+.compactDropdown{position:relative;flex:1;min-width:0}.compactDropdown .dropdownTrigger{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;background:#10101b;border:1px solid #777;border-radius:9px;padding:10px 12px;min-height:42px}.dropdownTrigger span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dropdownChevron{color:#bbb;font-size:20px}.dropdownList{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:100;background:#20202d;border:1px solid #7e728f;border-radius:10px;max-height:min(210px,38dvh);overflow-y:auto;overscroll-behavior:contain;box-shadow:0 12px 30px #000a;padding:4px}.compactDropdown .dropdownOption{display:block;width:100%;text-align:left;background:transparent;border:0;border-radius:6px;padding:11px 12px;font-size:14px}.compactDropdown .dropdownOption+ .dropdownOption{border-top:1px solid #ffffff1b}.compactDropdown .dropdownOption:active{background:#604399}.dropdownEmpty{padding:12px;color:#aaa;font-size:13px}</style><style>
+.symbol{background:transparent!important;border:0!important;box-shadow:none!important;padding:0;width:43px;height:43px;display:grid;place-items:center}
+.symbol img{width:36px;height:36px;object-fit:contain;display:block;filter:drop-shadow(0 2px 3px #000c)}
+.symbol.selected img{filter:drop-shadow(0 0 7px #c6a1ff) drop-shadow(0 0 3px #fff)}
+.symbol:disabled{opacity:.25}
+.poisonLife{background:linear-gradient(135deg,#101722dd,#0b161ddd)!important}
+.poisonLife:before{display:none!important}
+.poisonCount{color:#adffc0!important}.poisonDroplet{filter:drop-shadow(0 0 9px #53ff82)!important}
+.tile:has(.poisonLife){border-color:#61b87a;box-shadow:none}
+.footer .poisonAction{flex:0 0 46px;font-size:24px;line-height:1;padding:2px;display:grid;place-items:center}
+.tile.dead:after{content:"";position:absolute;inset:0;background:#050609a8;z-index:6;pointer-events:none}
+.tile.dead .name,.tile.dead .life,.tile.dead .poisonLife,.tile.dead .damageSegments{filter:grayscale(.8)}
+.tile.dead .symbol,.tile.dead .edit{z-index:9}
+.deadFlag{position:absolute;top:6px;right:8px;z-index:8;font-size:11px;color:#dedbe3;background:#15151ac9;border-radius:8px;padding:3px 6px;pointer-events:none}
+</style><style>
+/* v10 polished interactions */
+.tile.dead:after{display:none!important}
+.tile.dead{animation:deathDesaturate 2.8s ease forwards}
+.tile.dead .name,.tile.dead .life,.tile.dead .poisonLife,.tile.dead .damageSegments{filter:none!important}
+.deathOverlay{position:absolute;inset:0;z-index:7;pointer-events:none;display:grid;place-items:center;background:#05050500;animation:deathShade 2.8s ease forwards}
+.deathOverlay strong{font-size:clamp(19px,5vh,45px);font-weight:950;letter-spacing:.13em;color:#fa293a;text-shadow:0 0 18px #fc1828;animation:deathWords 2.8s ease forwards}
+@keyframes deathDesaturate{0%,18%{filter:saturate(1)}100%{filter:saturate(.08)}}
+@keyframes deathShade{0%{background:#05050500}35%{background:#09090970}100%{background:#070707aa}}
+@keyframes deathWords{0%{opacity:0;transform:scale(1.18);color:#ff2538}20%{opacity:1;transform:scale(1)}60%{color:#e03c45}100%{color:#a8a8a8;text-shadow:none;opacity:.9}}
+.symbol{width:34px!important;height:34px!important;right:7px;bottom:7px}.symbol img{width:27px!important;height:27px!important}
+.life,.segnum,.poisonCount{transition:transform .08s ease;will-change:transform}
+.gestureActive .lifeNumber,.gestureActive .segnum,.gestureActive .poisonCount{filter:drop-shadow(0 0 7px #ffffff88)}
+.lifeNumber{display:inline-block;transition:transform .08s ease;font-variant-numeric:tabular-nums}
+.dragIndicator{position:absolute;top:12%;left:50%;transform:translateX(-50%);background:#15151ac9;border:1px solid #ffffff55;border-radius:12px;padding:3px 12px;font-size:clamp(13px,3vh,20px);font-weight:800;z-index:5;pointer-events:none}
+.preview{display:none!important}
+@media(max-height:440px){.symbol{width:29px!important;height:29px!important}.symbol img{width:24px!important;height:24px!important}}
+</style><style>
+/* v11: state transitions, rather than replaying on every mode change */
+.tile.dead{animation:none!important;filter:saturate(.08)}
+.tile.dead.justDied{animation:deathDesaturate 2.8s ease forwards!important}
+.deathOverlay{animation:none!important;background:#070707aa}
+.deathOverlay strong{animation:none!important;color:#a8a8a8;text-shadow:none;opacity:.9}
+.justDied .deathOverlay{animation:deathShade 2.8s ease forwards!important}
+.justDied .deathOverlay strong{animation:deathWords 2.8s ease forwards!important}
+.lifeNumber,.segnum,.poisonCount{transform:none!important;transition:none!important}
+.gestureActive .lifeNumber,.gestureActive .segnum,.gestureActive .poisonCount{filter:none!important}
+.tile.justRevived{animation:reviveColor 1.65s ease-out both}
+.reviveFlash{position:absolute;inset:0;z-index:8;pointer-events:none;border-radius:inherit;animation:reviveLight 1.65s ease-out both}
+@keyframes reviveColor{0%{filter:saturate(.08) brightness(.48)}30%{filter:saturate(.5) brightness(1.25)}100%{filter:saturate(1) brightness(1)}}
+@keyframes reviveLight{0%{opacity:0;box-shadow:inset 0 0 0 1px #ffffff00;background:transparent}22%{opacity:1;box-shadow:inset 0 0 65px 18px #e6fffba8,0 0 35px #a9fff5aa;background:#d9ffeb30}100%{opacity:0;box-shadow:inset 0 0 0 1px #ffffff00;background:transparent}}
+@media(prefers-reduced-motion:reduce){.tile.justDied,.justDied .deathOverlay,.justDied .deathOverlay strong,.tile.justRevived,.reviveFlash{animation-duration:.01ms!important}}
+</style><style>
+/* v12: opposite side of table faces opposite player, without rotating the touch surface */
+.tile.facingAway .name{top:auto;bottom:9px;left:auto;right:10px;transform:rotate(180deg)}
+.tile.facingAway .lifeNumber,.tile.facingAway .poisonCount{transform:rotate(180deg)!important}
+.tile.facingAway .poison{bottom:auto;top:8px;left:auto;right:9px;transform:rotate(180deg)}
+.tile.facingAway .symbol{bottom:auto;top:7px;right:auto;left:7px;transform:rotate(180deg)}
+.tile.facingAway .edit{top:auto;bottom:7px;right:auto;left:7px;transform:rotate(180deg)}
+.tile.facingAway .attacker{transform:rotate(180deg)}
+.tile.facingAway .segment .segname,.tile.facingAway .segment .segnum{transform:rotate(180deg)}
+.tile.facingAway .dragIndicator{top:auto;bottom:12%;transform:translateX(-50%) rotate(180deg)}
+/* Keep the death title a single centered line, even in narrow portrait panels */
+.deathOverlay{overflow:hidden;padding:5px;isolation:isolate}
+.deathOverlay strong{display:block;max-width:100%;white-space:nowrap;font-size:clamp(13px, min(5vw, 5vh), 46px)!important;letter-spacing:.055em!important;line-height:1.1;text-align:center;transform-origin:center}
+.tile.facingAway .deathOverlay strong{rotate:180deg}
+@media(orientation:portrait){.deathOverlay strong{font-size:clamp(12px,4.5vw,27px)!important;letter-spacing:.025em!important}}
+</style><style>
+.bar{display:none!important}.board{flex:1;min-height:0}.footer{justify-content:center;min-height:42px;gap:7px}.footer button{flex:0 1 70px;min-width:45px;font-size:24px;line-height:1;padding:4px 10px}.footer button.primary{flex:1;font-size:16px}.angelMark{position:absolute;z-index:8;top:7px;left:50%;transform:translateX(-50%);font-size:21px;filter:drop-shadow(0 0 6px #fff)}.tile:has(.angelMark){outline:2px solid #f5dc91;outline-offset:-3px}.footer button{flex:0 0 52px!important;min-width:0!important}.footer button.primary{flex:0 1 220px!important}.footer{justify-content:center!important}.footer button.active{box-shadow:0 0 9px #a88aff}.portrait .deathOverlay strong{font-size:clamp(15px,4vw,32px)!important;white-space:nowrap!important}.portrait .deathOverlay{overflow:hidden}
+</style><style>
+.orientationChoices{display:flex;gap:10px;margin:8px 0 14px}.orientationChoices>button{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;padding:10px}.orientationChoices small{font-size:12px}.miniBoard{display:grid;width:112px;height:75px;gap:3px}.miniSeat{background:#7779d0;border:1px solid #bbb9ff;border-radius:3px;display:grid;place-items:center}.miniSeat span{font-size:17px}
+.around .board,.portrait.around .board{grid-template-columns:repeat(var(--cols),minmax(0,1fr));grid-template-rows:repeat(var(--rows),minmax(0,1fr))}
+.tile.facingLeft .lifeNumber,.tile.facingLeft .poisonCount,.tile.facingLeft .deathOverlay strong,.tile.facingLeft .segname,.tile.facingLeft .segnum,.tile.facingLeft .attacker{transform:rotate(-90deg)!important}
+.tile.facingRight .lifeNumber,.tile.facingRight .poisonCount,.tile.facingRight .deathOverlay strong,.tile.facingRight .segname,.tile.facingRight .segnum,.tile.facingRight .attacker{transform:rotate(90deg)!important}
+.tile.facingLeft .name{top:auto;bottom:9px;left:8px;writing-mode:vertical-rl;transform:rotate(180deg)}
+.tile.facingRight .name{top:9px;left:auto;right:8px;writing-mode:vertical-rl}
+.tile.facingLeft .symbol{top:7px;bottom:auto;left:7px;right:auto;transform:rotate(-90deg)}
+.tile.facingRight .symbol{top:auto;bottom:7px;left:auto;right:7px;transform:rotate(90deg)}
+.tile.facingLeft .poison{top:auto;bottom:7px;left:7px;right:auto;transform:rotate(-90deg)}
+.tile.facingRight .poison{top:7px;bottom:auto;left:auto;right:7px;transform:rotate(90deg)}
+.tile.facingLeft .edit{top:auto;bottom:7px;left:auto;right:7px;transform:rotate(-90deg)}
+.tile.facingRight .edit{top:7px;bottom:auto;left:7px;right:auto;transform:rotate(90deg)}
+.around .tile .life{font-size:clamp(30px,9vh,80px)}
+.around .tile .deathOverlay strong{font-size:clamp(10px,2.5vw,25px)!important}
+</style><style>
+/* v18: compact responsive setup previews; never overflow the selection buttons */
+.orientationChoices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%}
+.orientationChoices>button{min-width:0;width:100%;overflow:hidden;padding:9px 5px;gap:7px}
+.orientationSketch{width:100%;display:flex;justify-content:center;align-items:center;min-width:0}
+.miniBoard{width:min(100%,130px);height:82px;min-width:0;gap:2px}
+.miniSeat{min-width:0;min-height:0;overflow:hidden}
+.orientationChoices small{font-size:clamp(10px,2.8vw,13px);white-space:normal;line-height:1.2}
+.setup .box{max-width:min(680px,100%)}
+@media(max-width:420px){.miniBoard{height:66px}.orientationChoices>button{padding:7px 3px}}
+</style><style>
+/* v20: balanced around-table seats and correctly oriented content */
+.around .board{gap:4px!important;overflow:hidden;min-height:0;min-width:0}
+.around .tile{min-width:0;min-height:0;overflow:hidden}
+.around .tile .life{font-size:clamp(25px,min(7vw,8vh),75px)!important}
+.around .tile .lifeNumber{display:inline-block;line-height:1;white-space:nowrap}
+.around .tile.facingLeft .lifeNumber{transform:rotate(90deg)!important}
+.around .tile.facingRight .lifeNumber{transform:rotate(-90deg)!important}
+.around .tile.facingLeft .poisonCount,.around .tile.facingLeft .deathOverlay strong{transform:rotate(90deg)!important}
+.around .tile.facingRight .poisonCount,.around .tile.facingRight .deathOverlay strong{transform:rotate(-90deg)!important}
+.orientationChoices .miniBoard{height:82px;max-width:100%;aspect-ratio:1.55;gap:2px}
+.orientationChoices .miniSeat span{font-size:clamp(10px,2vw,17px)}
+</style><style>
+/* v25: Commander damage labels follow the same reading direction as life totals. */
+.around .tile.facingLeft .segment .segname,
+.around .tile.facingLeft .segment .segnum {transform:rotate(90deg)!important}
+.around .tile.facingRight .segment .segname,
+.around .tile.facingRight .segment .segnum {transform:rotate(-90deg)!important}
+/* Rotate only the message, not its full-size layout container. */
+.tile.facingLeft .attacker,.tile.facingRight .attacker,.tile.facingAway .attacker{transform:none!important}
+.tile.facingLeft .attacker > *{transform:rotate(90deg)!important}
+.tile.facingRight .attacker > *{transform:rotate(-90deg)!important}
+.tile.facingAway .attacker > *{transform:rotate(180deg)!important}
+</style><style>
+/* v26: rotate complete commander damage content as one unit; no overlapping labels. */
+.segment .segcontent{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;max-width:95%;min-width:0;transform:none!important;transform-origin:center;}
+.segment .segcontent .segname,.segment .segcontent .segnum{transform:none!important;display:block;max-width:100%;text-align:center;line-height:1.12;}
+.tile.facingAway .segment .segcontent{transform:rotate(180deg)!important;}
+.around .tile.facingLeft .segment .segcontent{transform:rotate(90deg)!important;width:calc(var(--tile-h, 100px) - 22px);max-width:none;}
+.around .tile.facingRight .segment .segcontent{transform:rotate(-90deg)!important;width:calc(var(--tile-h, 100px) - 22px);max-width:none;}
+.around .tile.facingLeft .segment .segname,.around .tile.facingLeft .segment .segnum,.around .tile.facingRight .segment .segname,.around .tile.facingRight .segment .segnum{transform:none!important;}
+.attacker{display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.attackerContent{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;max-width:95%;text-align:center;}
+.tile.facingAway .attackerContent{transform:rotate(180deg)!important;}
+.around .tile.facingLeft .attackerContent{transform:rotate(90deg)!important;width:calc(var(--tile-h, 100px) - 20px);max-width:none;}
+.around .tile.facingRight .attackerContent{transform:rotate(-90deg)!important;width:calc(var(--tile-h, 100px) - 20px);max-width:none;}
+.tile .attackerContent>*{transform:none!important;}
+
+/* v32: landscape layout and screen wake lock */
+#rotateNotice{display:none;position:fixed;inset:0;z-index:99999;background:#090a10;color:#fff;align-items:center;justify-content:center;text-align:center;padding:30px}
+#rotateNotice .rotateInner{max-width:340px;display:grid;gap:16px;justify-items:center}
+#rotateNotice .rotateIcon{font-size:55px}
+#rotateNotice p{color:#bbb;margin:0;line-height:1.5}
+@media (orientation:portrait){#rotateNotice{display:flex!important}}
+</style><style>
+/* v35: imported art is unfiltered in life mode, dimmed but visible in damage mode. */
+.tile.customArt:not(.modeDamage):not(.modePoison):before{background:transparent!important}
+.tile.customArt.modeDamage:before{background:rgba(0,0,0,.48)!important}
+.tile.customArt.modeDamage .segment{background:rgba(0,0,0,.13)!important}
+.tile.customArt.modeDamage .attacker{background:rgba(0,0,0,.17)!important}
+/* Personal backgrounds: cover the tile, while retaining legible controls. */
+.tile.customArt{background-size:100% 100%!important;background-position:center center!important;background-repeat:no-repeat!important}
+.tile.customArt:before{background:linear-gradient(180deg,#0008 0%,#0002 35%,#0005 100%)}
+.tile.customArt.modeDamage:before{background:#050509ad;z-index:0}
+.tile.customArt.modePoison:before{background:linear-gradient(130deg,#0b5025bb,#105f36d9);z-index:0}
+.tile.customArt .poisonLife{background:transparent!important}
+.tile.customArt .segment{background:linear-gradient(#0008,#000c),var(--bg)!important}
+.artGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;margin:9px 0}
+.artChoice{min-height:82px;position:relative;overflow:hidden;border:2px solid #ffffff33;border-radius:10px;background:#242330;display:flex;align-items:end;justify-content:center;padding:6px;color:#fff;font-size:11px;text-shadow:0 1px 4px #000}
+.artChoice img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.artChoice span{position:relative;z-index:1;background:#000a;border-radius:5px;padding:2px 5px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.artChoice.chosen{border-color:#e1c5ff;box-shadow:0 0 0 2px #9b65ff,0 0 14px #a26affaa}
+.artTools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}
+.artTools button{font-size:12px}
+#artPickerScreen{position:fixed;inset:0;z-index:1000;background:#101019;overflow:auto;padding:14px;color:white}.artPicker{max-width:1050px;margin:auto}.artPickerHeader{display:flex;align-items:center;justify-content:space-between;gap:12px}.artPickerHeader strong{font-size:18px}.artPickerGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:16px}.artPickerCard{min-width:0;display:flex;flex-direction:column;gap:7px;padding:6px;text-align:center;background:#252331;border:2px solid #555;border-radius:13px;overflow:hidden}.artPickerCard img,.artPickerNoImage{width:100%;height:130px;object-fit:cover;border-radius:8px}.artPickerNoImage{display:grid;place-items:center;font-size:40px;background:#44405b}.artPickerCard span{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.artPickerCard.chosen{border-color:#c9a5ff}.tile.customArt .life{z-index:2}.tile.customArt .lifeNumber{color:#fff!important;text-shadow:0 3px 8px #000,0 0 14px #000,0 1px 3px #000;font-weight:900}.tile.customArt:before{z-index:1;pointer-events:none}.tile.customArt .name{z-index:4}.tile.customArt .poisonLife{z-index:2}.tile.customArt .damageSegments,.tile.customArt .attacker{z-index:2}
+.board{padding:5px;position:relative;isolation:isolate;background-image:var(--table-art,none);background-size:cover;background-position:center;background-repeat:no-repeat;border-radius:12px}
+.board>.tile{z-index:1}
+.mainBgPreview{height:110px;border-radius:12px;background-size:100% 100%;background-position:center;border:1px solid #ffffff55;margin:10px 0}
+/* v39: player artwork and table artwork stretch edge-to-edge without cropping. */
+#app:has(.board){background-color:#090a10}
+#app .board{background-image:none!important;background-color:transparent!important}
+#app .footer{background:transparent!important;position:relative;z-index:2}
+</style><style>
+/* v40: art faces its seated player, independently of life and controls. */
+.tile.customArt{background:#101019!important;isolation:isolate}
+.tile.customArt::after{content:"";display:block!important;position:absolute;z-index:0;pointer-events:none;left:50%;top:50%;width:100%;height:100%;inset:auto;background-image:var(--player-art);background-repeat:no-repeat;background-position:center;background-size:100% 100%;transform:translate(-50%,-50%)}
+.tile.customArt.facingAway::after{transform:translate(-50%,-50%) rotate(180deg)}
+/* Side seats in 7/8-player layouts: swap the layer dimensions before rotation,
+   preserving the whole picture and filling the tile without cropping. */
+.tile.customArt.facingLeft::after,.tile.customArt.facingRight::after{width:var(--tile-h,100%);height:var(--tile-w,100%)}
+.tile.customArt.facingLeft::after{transform:translate(-50%,-50%) rotate(90deg)}
+.tile.customArt.facingRight::after{transform:translate(-50%,-50%) rotate(-90deg)}
+.tile.customArt::before{z-index:1!important}
+.tile.customArt .life,.tile.customArt .poisonLife,.tile.customArt .damageSegments,.tile.customArt .attacker{position:relative;z-index:2}
+.tile.customArt .life,.tile.customArt .poisonLife,.tile.customArt .damageSegments{position:absolute}
+.tile.customArt .attacker{position:absolute;inset:0}
+.tile.customArt.modeDamage .segment{background:rgba(0,0,0,.13)!important}
+.tile.customArt.modeDamage .attacker{background:rgba(0,0,0,.17)!important}
+</style><style>
+/* v41: rotate artwork as a complete rectangular image, not a clipped square. */
+.tile.customArt::after{width:100%!important;height:100%!important;inset:auto!important;left:50%!important;top:50%!important;background-size:100% 100%!important}
+.tile.customArt.facingLeft::after,.tile.customArt.facingRight::after{width:var(--art-rotated-width,100%)!important;height:var(--art-rotated-height,100%)!important}
+/* v42: right-side seats face the player on the right, matching life numbers. */
+.around .tile.facingRight .name{top:auto;bottom:9px;right:8px;left:auto;writing-mode:vertical-rl;transform:rotate(180deg)}
+.around .tile.facingRight .symbol{top:7px;bottom:auto;right:7px;left:auto;transform:rotate(-90deg)}
+</style></head><body><div id="rotateNotice"><div class="rotateInner"><div class="rotateIcon">↻</div><strong>Draai je telefoon naar liggende stand</strong><p>Commander Life Counter is ontworpen om liggend te spelen. Zet automatisch draaien aan als het scherm niet meedraait.</p><button id="tryLandscape" type="button">Probeer liggende modus</button></div></div><div id="app"></div><script>
+const palette={W:'#e9d9a8',U:'#2688d2',B:'#595166',R:'#d64d43',G:'#388b57',C:'#777c8c'};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let deathSeen=Array(10).fill(false), deathTransitions=Array(10).fill(null);
+let orientation="opposite",count=4,starting=40,custom=40,stage=0,editing=null,active=null,poisonMode=false,angelMode=false,history=[],damage={},players=Array.from({length:10},(_,i)=>({name:'Speler '+(i+1),life:40,poison:0,cantLose:false,commanders:[{name:'Commander 1',colors:[]}]}));
+const app=document.getElementById('app');
+let artImages={};let artItems=[];let selectedArtForSetup=null;
+const TABLE_BG_KEY='commander-life-counter-table-background-v36';
+let tableBackgroundId=null;
+try{tableBackgroundId=localStorage.getItem(TABLE_BG_KEY)||null}catch(e){}
+function saveTableBackground(id){tableBackgroundId=id;try{if(id)localStorage.setItem(TABLE_BG_KEY,id);else localStorage.removeItem(TABLE_BG_KEY)}catch(e){}renderTableBgPicker()}
+function tableBackgroundControls(){const a=artItems.find(x=>x.id===tableBackgroundId);return `<div class="artTools"><button onclick="openTableBgPicker()">🖼 Achtergrond achter levensvakken</button><small class="hint">${a?'Gekozen: '+esc(a.name):'Standaard: zwart'}</small></div>`}
+function openTableBgPicker(){const old=document.getElementById('artPickerScreen');if(old)old.remove();renderTableBgPicker()}
+function renderTableBgPicker(){let screen=document.getElementById('artPickerScreen');if(!screen){screen=document.createElement('div');screen.id='artPickerScreen';document.body.appendChild(screen)}const a=artImages[tableBackgroundId];screen.innerHTML=`<div class="artPicker"><div class="artPickerHeader"><button onclick="closeTableBgPicker()">← Terug</button><strong>🖼 Achtergrond van de tafel</strong><button class="primary" onclick="importTableBg()">＋ Importeren</button></div><p class="hint">Kies een afbeelding voor de ruimte achter alle levensvakken. De spelerafbeeldingen veranderen niet.</p>${a?`<div class="mainBgPreview" style="background-image:url('${a}')"></div>`:''}<div class="artPickerGrid"><button class="artPickerCard ${!tableBackgroundId?'chosen':''}" onclick="saveTableBackground(null)"><div class="artPickerNoImage">⬛</div><span>Zwart (standaard)</span></button>${artItems.map(x=>`<button class="artPickerCard ${tableBackgroundId===x.id?'chosen':''}" onclick="saveTableBackground('${x.id}')"><img src="${artImages[x.id]}" alt=""><span>${esc(x.name)}</span></button>`).join('')}</div></div>`}
+function closeTableBgPicker(){document.getElementById('artPickerScreen')?.remove();if(stage===0)setup();else if(stage===2)settings();else draw()}
+function importTableBg(){importArt(null);const pickerScreen=document.getElementById('artPickerScreen');if(pickerScreen)pickerScreen.dataset.tableBg='1'}
+
+function tileBackground(p){const art=artImages[p.backgroundId];return art?"#101019":bg(p)}
+function artClass(p){return artImages[p.backgroundId]?'customArt':''}
+function artSection(i){const p=players[i],a=artItems.find(x=>x.id===p.backgroundId);return `<div class="profilePanel"><b>Achtergrond voor ${esc(p.name)}</b><p class="hint">${a?'Geselecteerd: '+esc(a.name):'Mana-kleuren (standaard)'}</p><button class="primary" style="width:100%" onclick="openArtPicker(${i})">🖼 Achtergrond kiezen</button></div>`}
+let artPickerOrigin='modal';
+function openArtPicker(i=null){artPickerOrigin=i===null?'setup':stage===2&&editing===null?'settings':'modal';renderArtPicker(i)}
+function renderArtPicker(i){const target=i===null?null:players[i];const selected=target?.backgroundId||null;const markup=`<div class="artPicker"><div class="artPickerHeader"><button onclick="closeArtPicker(${i===null?'null':i})">← Terug</button><strong>🖼 Achtergronden</strong><button class="primary" onclick="importArt(${i===null?'null':i})">＋ Importeren</button></div><p class="hint">${target?'Kies een achtergrond voor '+esc(target.name):'Importeer afbeeldingen voor je spelers en commander-presets.'} Afbeeldingen worden automatisch passend bijgesneden.</p><div class="artPickerGrid">${i!==null?`<button class="artPickerCard ${!selected?'chosen':''}" onclick="chooseArt(${i},null)"><div class="artPickerNoImage">🎨</div><span>Mana-kleuren</span></button>`:''}${artItems.map(a=>`<button class="artPickerCard ${selected===a.id?'chosen':''}" onclick="${i===null?`previewArt('${a.id}')`:`chooseArt(${i},'${a.id}')`}"><img src="${artImages[a.id]}" alt=""><span>${esc(a.name)}</span></button>`).join('')}</div>${!artItems.length?'<p class="hint">Nog geen afbeeldingen geïmporteerd.</p>':''}</div>`;
+ const old=document.getElementById('artPickerScreen');if(old)old.remove();const screen=document.createElement('div');screen.id='artPickerScreen';screen.innerHTML=markup;document.body.appendChild(screen);
+}
+function previewArt(id){const a=artItems.find(x=>x.id===id);if(a)alert(a.name+' is beschikbaar. Selecteer de afbeelding in de instellingen van een speler om deze te gebruiken.')}
+function closeArtPicker(i){document.getElementById('artPickerScreen')?.remove();if(artPickerOrigin==='setup')setup();else if(artPickerOrigin==='settings')settings();else if(i!==null&&editing!==null)modal();else if(stage===2)settings();else draw()}
+
+function bg(p){const c=[...new Set(p.commanders.flatMap(x=>x.colors))];if(!c.length&&p.quickHue!==undefined)return `linear-gradient(150deg,hsl(${p.quickHue} 75% 49%),hsl(${p.quickHue} 66% 26%))`;if(!c.length&&p.quickColor)c.push(p.quickColor);return c.length?`linear-gradient(110deg,${c.map((x,i)=>`${palette[x]} ${i*100/c.length}%,${palette[x]} ${(i+1)*100/c.length}%`).join(',')})`:palette.C}
+function quickGame(){beginSetup(true);launch()}
+function orientationSketch(type){const n=Math.max(1,count),a=tableLayout(n,type);return `<span class="miniBoard" style="grid-template-columns:repeat(${a.cols},1fr);grid-template-rows:repeat(${a.rows},1fr)">${a.cells.map(c=>`<span class="miniSeat" style="grid-area:${c.row} / ${c.col} / span ${c.rs||1} / span ${c.cs||1}"><span style="transform:rotate(${c.angle}deg)">♙</span></span>`).join('')}</span>`}
+function tableLayout(n,type){
+ const cells=[];
+ if(type==='around' && [3,5,7,9].includes(n)){
+  // Equal-area tiles: the right-hand seat gets exactly 1/n of the board;
+  // the remaining n-1 seats form two equal rows.
+  const perRow=(n-1)/2;
+  const cols=n*perRow, leftCols=(n-1)*perRow;
+  for(let j=0;j<perRow;j++){
+   const col=j*(n-1)+1;
+   cells[j]={row:1,col,rs:6,cs:n-1,angle:180};
+   cells[perRow+j]={row:7,col,rs:6,cs:n-1,angle:0};
+  }
+  cells[n-1]={row:1,col:leftCols+1,rs:12,cs:perRow,angle:90};
+  return {cols,rows:12,cells};
+ }
+ if(type==='around' && n>=3){
+  // Balanced three-zone layout. The sides face outward, while the centre
+  // is divided into equal, full-height seats. No 60-track grid gaps.
+  const sideCount=n<=5?1:n<=8?2:3;
+  const centerCount=n-sideCount*2;
+  const tracks=12;
+  const add=(start,num,col,width,angle)=>{
+   for(let j=0;j<num;j++){
+    const top=Math.round(j*tracks/num)+1;
+    const bottom=Math.round((j+1)*tracks/num)+1;
+    cells[start+j]={row:top,col,rs:bottom-top,cs:width,angle};
+   }
+  };
+  add(0,sideCount,1,3,-90);
+  // Centre seats face the player seated at their respective table edge.
+  // Top half is upside down; bottom half is upright.
+  const topCount=Math.ceil(centerCount/2), bottomCount=Math.floor(centerCount/2);
+  for(let j=0;j<centerCount;j++){
+   const upper=j<topCount, index=upper?j:j-topCount;
+   const groupSize=upper?topCount:bottomCount;
+   const left=Math.round(index*6/groupSize)+4;
+   const right=Math.round((index+1)*6/groupSize)+4;
+   cells[sideCount+j]={row:upper?1:7,col:left,rs:6,cs:right-left,angle:upper?180:0};
+  }
+  add(sideCount+centerCount,sideCount,10,3,90);
+  return {cols:12,rows:12,cells};
+ }
+ const columns=n<=2?n:n<=4?2:n<=6?3:n<=8?4:5;
+ const groups=[];for(let remaining=n;remaining>0;remaining-=columns)groups.push(Math.min(remaining,columns));
+ const rows=groups.length;let idx=0;
+ groups.forEach((num,r)=>{
+  for(let j=0;j<num;j++){
+   const start=Math.floor(j*60/num)+1,end=Math.floor((j+1)*60/num)+1;
+   cells[idx++]={row:r+1,col:start,rs:1,cs:end-start,angle:rows>1&&r===0?180:0};
+  }
+ });
+ return {cols:60,rows,cells};
+}
+function setup(){const previousSetup=app.querySelector('.setup');const previousSetupScroll=previousSetup?previousSetup.scrollTop:0;stage=0;app.style.backgroundImage='none';app.className='';app.innerHTML=`<div class="setup"><div class="box"><h2>Nieuwe Commander game</h2><p>Aantal spelers (1–10)</p><div class="row"><button onclick="count=Math.max(1,count-1);setup()">−</button><b style="font-size:28px">${count}</b><button onclick="count=Math.min(10,count+1);setup()">+</button></div><p>Startlevens</p><div class="row">${[20,30,40,'custom'].map(v=>`<button class="${starting==v?'active':''}" onclick="starting=${typeof v==='number'?v:"'custom'"};setup()">${v==='custom'?'Custom':v}</button>`).join('')}</div>${starting==='custom'?`<input type="number" min="1" value="${custom}" oninput="custom=this.value">`:''}<p>Tafeloriëntatie</p><div class="orientationChoices"><button class="${orientation==='opposite'?'active':''}" onclick="orientation='opposite';setup()"><span class="orientationSketch">${orientationSketch('opposite')}</span><small>Tegenover elkaar</small></button><button class="${orientation==='around'?'active':''}" onclick="orientation='around';setup()"><span class="orientationSketch">${orientationSketch('around')}</span><small>Rondom tafel</small></button></div><p class="hint">Hierna stel je iedere speler in vanuit zijn eigen vak op de tafel.</p><div class="artTools"><button onclick="openArtPicker(null)">🖼 Spelerachtergronden beheren</button><small class="hint">Beschikbaar voor alle spelers en presets</small></div>${tableBackgroundControls()}<button style="width:100%;margin-bottom:8px;background:#303144" onclick="quickGame()">⚡ Quick game</button><button class="primary" style="width:100%" onclick="beginSetup()">Naar tafelindeling →</button></div></div>`;const nextSetup=app.querySelector('.setup');if(nextSetup)nextSetup.scrollTop=previousSetupScroll}
+function beginSetup(quick=false){const n=Number(starting==='custom'?custom:starting);if(!Number.isFinite(n)||n<1)return alert('Vul geldige startlevens in');players.forEach((p,i)=>{p.life=n;p.poison=0;p.cantLose=false;if(quick){p.commanders=[{name:'Commander 1',colors:[]}]}p.quickColor=['R','W','U','B','G','R','U','G','W','B'][i];p.quickHue=quick?[350,48,198,270,132,23,178,312,80,225][i]:undefined});damage={};history=[];deathSeen.fill(false);deathTransitions.fill(null);active=null;poisonMode=false;angelMode=false;stage=1;draw()}
+function launch(){stage=2;draw()}
+function snapshot(){history.push({life:players.map(p=>p.life),poison:players.map(p=>p.poison),damage:{...damage},cantLose:players.map(p=>p.cantLose)});if(history.length>200)history.shift()}
+function undo(){let s=history.pop();if(!s)return;players.forEach((p,i)=>{p.life=s.life[i];p.poison=s.poison[i];p.cantLose=s.cantLose?.[i]||false});damage=s.damage;draw()}
+function changeLife(i,n){if(!n)return;snapshot();players[i].life+=n;draw()}
+function changeDamage(i,j,n){let key=`${active}:${j}>${i}`,old=damage[key]||0;n=Math.max(-old,n);if(!n)return;snapshot();damage[key]=old+n;players[i].life-=n;draw()}
+function toggle(i){angelMode=false;poisonMode=false;if(stage===1){edit(i);return}if(!players[i].commanders.length)return;active=active===i?null:i;draw()}
+function togglePoison(){angelMode=false;active=null;poisonMode=!poisonMode;draw()}
+function toggleAngel(){active=null;poisonMode=false;angelMode=!angelMode;draw()}
+function angelPlayer(i){snapshot();players[i].cantLose=!players[i].cantLose;draw()}
+function changePoison(i,n){const old=players[i].poison;const next=Math.max(0,old+n);if(next===old)return;snapshot();players[i].poison=next;draw()}
+function isDead(i){const p=players[i];return !p.cantLose&&(p.life<=0||p.poison>=10||Object.entries(damage).some(([k,v])=>k.endsWith('>'+i)&&v>=21))}
+function updateDeathTransitions(){
+ for(let i=0;i<count;i++){
+  const dead=isDead(i);
+  deathTransitions[i]=stage===2?(dead&&!deathSeen[i]?'dying':!dead&&deathSeen[i]?'reviving':null):null;
+  deathSeen[i]=dead;
+ }
+}
+function draw(){updateDeathTransitions();app.style.backgroundImage=artImages[tableBackgroundId]?`url("${artImages[tableBackgroundId]}")`:'none';app.style.backgroundSize='100% 100%';app.style.backgroundPosition='center';app.style.backgroundRepeat='no-repeat';app.className=(innerWidth<innerHeight?'portrait ':'')+(orientation==='around'?'around':'');const layout=tableLayout(count,orientation);const cols=layout.cols,rows=layout.rows;app.innerHTML=`<div class="board" style="--table-art:${artImages[tableBackgroundId]?`url(${artImages[tableBackgroundId]})`:'none'};--cols:${cols};--rows:${rows};--portraitRows:${Math.ceil(count/2)}">${players.slice(0,count).map((p,i)=>`<section data-player="${i}" class="tile ${artClass(p)} ${poisonMode&&stage===2?'modePoison':active!==null&&stage===2?'modeDamage':''} ${layout.cells[i].angle===180?'facingAway':layout.cells[i].angle===-90?'facingLeft':layout.cells[i].angle===90?'facingRight':''} ${isDead(i)?'dead':''} ${deathTransitions[i]==='dying'?'justDied':''} ${deathTransitions[i]==='reviving'?'justRevived':''}" style="background:${tileBackground(p)};${artImages[p.backgroundId]?`--player-art:url(${artImages[p.backgroundId]});`:``}grid-area:${layout.cells[i].row} / ${layout.cells[i].col} / span ${layout.cells[i].rs||1} / span ${layout.cells[i].cs||1}">${p.cantLose?`<div class="angelMark" title="Can’t lose">🪽</div>`:''}${isDead(i)?`<div class="deathOverlay"><strong>YOU DIED</strong></div>`:''}${deathTransitions[i]==='reviving'?`<div class="reviveFlash"></div>`:''}${poisonMode&&stage===2?`<div class="name">${esc(p.name)}</div><div class="poisonLife" data-poison="${i}"><span class="poisonCount"><span class="poisonDroplet">☠</span> ${p.poison}</span><span class="preview hidden"></span></div>`:active!==null&&stage===2?(i===active?`<div class="attacker"><div class="attackerContent"><b>${esc(p.name)}</b><small>Commander damage toewijzen</small><small>Druk opnieuw op het symbool om af te sluiten</small></div></div>`:`<div class="damageSegments">${players[active].commanders.map((c,j)=>`<div class="segment" data-target="${i}" data-cmd="${j}" style="--bg:${bg({commanders:[c]})}"><span class="segcontent"><span class="segname">${esc(c.name)}</span><span class="segnum">${damage[`${active}:${j}>${i}`]||0}</span></span><span class="preview hidden"></span></div>`).join('')}</div>`):`<div class="name">${esc(p.name)}</div><div class="life" ${stage===2?`data-life="${i}"`:''}><span class="lifeNumber">${p.life}</span><span class="preview hidden"></span></div>`}${stage===1?`<button class="edit" onclick="edit(${i})">⚙</button>`:`<span class="poison" onclick="togglePoison()">☠ ${p.poison}</span><button class="symbol ${active===i?'selected':''}" ${p.commanders.length?'':'disabled'} onclick="toggle(${i})" aria-label="Commander damage">${EMBLEM}</button>`}</section>`).join('')}</div><div class="footer">${stage===1?`<button onclick="setup()" aria-label="Terug">←</button><button class="primary" onclick="launch()">▶ Game starten</button>`:`<button title="Undo" aria-label="Undo" onclick="undo()">↶</button><button title="Instellingen" aria-label="Instellingen" onclick="settings()">⚙</button><button title="Poison counters" aria-label="Poison counters" class="${poisonMode?'active':''}" onclick="togglePoison()">☠</button><button title="Can't lose" aria-label="Can't lose" class="${angelMode?'active':''}" onclick="toggleAngel()">🪽</button>${active!==null||poisonMode?`<button title="Normale levens" onclick="active=null;poisonMode=false;draw()">✓</button>`:''}`}</div><div id="overlay"></div>`;
+ document.querySelectorAll('[data-player]').forEach(el=>el.addEventListener('pointerdown',e=>{if(!angelMode||stage!==2)return;e.preventDefault();e.stopImmediatePropagation();angelPlayer(+el.dataset.player)},true));
+ document.querySelectorAll('[data-life]').forEach(el=>gesture(el,(dy,y,h)=>changeLife(+el.dataset.life,Math.abs(dy)<12?(y<h/2?1:-1):Math.round(-dy/22)),dy=>Math.round(-dy/22),()=>players[+el.dataset.life].life, '.lifeNumber'));
+ document.querySelectorAll('[data-poison]').forEach(el=>gesture(el,(dy,y,h)=>changePoison(+el.dataset.poison,Math.abs(dy)<12?(y<h/2?1:-1):Math.round(-dy/22)),dy=>Math.round(-dy/22),()=>players[+el.dataset.poison].poison, '.poisonCount',true));
+ document.querySelectorAll('.tile').forEach(t=>{const r=t.getBoundingClientRect();t.style.setProperty('--tile-h',r.height+'px');t.style.setProperty('--tile-w',r.width+'px')});
+ document.querySelectorAll('[data-target]').forEach(el=>gesture(el,(dy,y,h)=>changeDamage(+el.dataset.target,+el.dataset.cmd,Math.abs(dy)<12?(y<h/2?1:-1):Math.round(-dy/22)),dy=>Math.round(-dy/22),()=>damage[`${active}:${+el.dataset.cmd}>${+el.dataset.target}`]||0,'.segnum',true));
+}
+function gesture(el,commit,preview,getBase,numberSelector,clampZero=false){
+ let start=null,startX=null,base=0,indicator=null;
+ const number=el.querySelector(numberSelector);
+ const original=number?number.textContent:'';
+ function paint(dy){const tile=el.closest('.tile');if(tile?.classList.contains('facingAway'))dy=-dy;let delta=preview(dy),next=base+delta;if(clampZero)next=Math.max(0,next);if(number){if(numberSelector==='.poisonCount')number.innerHTML='<span class="poisonDroplet">☠</span> '+next;else number.textContent=next;number.style.transform='none';}if(indicator){indicator.textContent=delta===0?'':(delta>0?'+':'')+delta;indicator.style.opacity=delta===0?'0':'1';}}
+ el.addEventListener('pointerdown',e=>{if(e.button!==0||e.target.closest('button'))return;start=e.clientY;startX=e.clientX;base=getBase();el.setPointerCapture(e.pointerId);el.classList.add('gestureActive');indicator=document.createElement('div');indicator.className='dragIndicator';indicator.style.opacity='0';el.appendChild(indicator)});
+ el.addEventListener('pointermove',e=>{if(start===null)return;const t=el.closest('.tile');paint(t?.classList.contains('facingLeft')?startX-e.clientX:t?.classList.contains('facingRight')?e.clientX-startX:e.clientY-start)});
+ el.addEventListener('pointerup',e=>{if(start===null)return;const r=el.getBoundingClientRect(),t=el.closest('.tile'),left=t?.classList.contains('facingLeft'),right=t?.classList.contains('facingRight');let dy=left?startX-e.clientX:right?e.clientX-startX:e.clientY-start,y=left?r.right-startX:right?startX-r.left:start-r.top,h=(left||right)?r.width:r.height;start=null;el.classList.remove('gestureActive');if(indicator)indicator.remove();indicator=null;if(el.closest('.facingAway')){dy=-dy;y=h-y}commit(dy,y,h)});
+ el.addEventListener('pointercancel',()=>{if(start===null)return;start=null;el.classList.remove('gestureActive');if(indicator)indicator.remove();indicator=null;if(number){number.textContent=original;number.style.transform=''}});
+}
+
+/* v27: locally saved player profiles and per-player commander presets. */
+const PROFILE_KEY='commander-life-counter-profiles-v27';
+let savedProfiles={};
+try{const loaded=JSON.parse(localStorage.getItem(PROFILE_KEY)||'{}');if(loaded&&typeof loaded==='object'&&!Array.isArray(loaded))savedProfiles=loaded}catch(e){}
+function profileNames(){return Object.keys(savedProfiles).sort((a,b)=>a.localeCompare(b,'nl'))}
+function saveProfiles(){try{localStorage.setItem(PROFILE_KEY,JSON.stringify(savedProfiles));return true}catch(e){alert('Opslaan is niet gelukt. Controleer of lokale opslag in deze browser is toegestaan.');return false}}
+function validCommanders(list){return Array.isArray(list)&&list.length?list.slice(0,5).map((c,i)=>({name:String(c.name||'Commander '+(i+1)),colors:Array.isArray(c.colors)?c.colors.filter(x=>['W','U','B','R','G'].includes(x)):[]})):[{name:'Commander 1',colors:[]}]}
+const dropdownSelections={};
+function selectionFor(i){return dropdownSelections[i]||(dropdownSelections[i]={player:'',preset:'',presetOwner:''})}
+function profileSelect(i){const name=document.getElementById('savedPlayerSelect')?.value;if(!name||!savedProfiles[name])return;const p=players[i];selectedPresetIndex=-1;selectionFor(i).player=name;selectionFor(i).preset='';selectionFor(i).presetOwner=name;p.name=name;p.commanders=validCommanders(savedProfiles[name].presets?.[0]?.commanders||[{name:'Commander 1',colors:[]}]);p.quickHue=undefined;p.quickColor=null;modal()}
+function savePlayerProfile(i){const p=players[i];const name=p.name.trim();if(!name)return alert('Vul eerst een spelersnaam in.');p.name=name;if(!savedProfiles[name])savedProfiles[name]={presets:[]};if(saveProfiles()){selectionFor(i).player=name;modal()}}
+function removePlayerProfile(i){const name=players[i].name;if(!savedProfiles[name])return;if(!confirm('Speler '+name+' en alle bijbehorende presets verwijderen uit de opgeslagen lijst?'))return;delete savedProfiles[name];selectionFor(i).player='';selectionFor(i).preset='';saveProfiles();modal()}
+function saveCommanderPreset(i){const p=players[i],name=p.name.trim();if(!name)return alert('Vul eerst een spelersnaam in.');const label=prompt('Naam voor deze commander-preset (bijvoorbeeld Atraxa of Eldrazi):',p.commanders[0]?.name||'Mijn deck');if(label===null)return;const presetName=label.trim();if(!presetName)return alert('Geef de preset een naam.');p.name=name;if(!savedProfiles[name])savedProfiles[name]={presets:[]};const presets=savedProfiles[name].presets;const index=presets.findIndex(x=>x.name===presetName);if(index>=0&&!confirm('Preset '+presetName+' overschrijven?'))return;const preset={name:presetName,commanders:validCommanders(p.commanders),backgroundId:p.backgroundId||null};if(index>=0)presets[index]=preset;else presets.push(preset);if(saveProfiles()){selectionFor(i).player=name;selectionFor(i).preset=String(index>=0?index:presets.length-1);selectionFor(i).presetOwner=name;selectedPresetIndex=Number(selectionFor(i).preset);modal()}}
+let selectedPresetIndex=-1;
+function loadCommanderPreset(i){const name=players[i].name,idx=Number(document.getElementById('savedPresetSelect')?.value||'-1'),list=savedProfiles[name]?.presets||[];if(!Number.isInteger(idx)||!list[idx])return;selectedPresetIndex=idx;selectionFor(i).preset=String(idx);selectionFor(i).presetOwner=name;players[i].commanders=validCommanders(list[idx].commanders);players[i].backgroundId=list[idx].backgroundId||null;players[i].quickHue=undefined;players[i].quickColor=null;modal()}
+function removeCommanderPreset(i){const name=players[i].name,idx=selectedPresetIndex,list=savedProfiles[name]?.presets||[];if(!Number.isInteger(idx)||!list[idx])return;if(!confirm('Preset '+list[idx].name+' verwijderen?'))return;list.splice(idx,1);selectedPresetIndex=-1;selectionFor(i).preset='';saveProfiles();modal()}
+function dropdown(id,placeholder,items,selected=''){const chosen=items.find(x=>String(x.value)===String(selected));return `<div class="compactDropdown" id="${id}Wrap"><input type="hidden" id="${id}" value="${chosen?esc(String(chosen.value)):''}"><button type="button" class="dropdownTrigger" onclick="toggleDropdown('${id}')"><span id="${id}Label">${chosen?esc(chosen.label):placeholder}</span><span class="dropdownChevron">⌄</span></button><div class="dropdownList hidden" id="${id}List">${items.length?items.map(x=>`<button type="button" class="dropdownOption" onclick="pickDropdown('${id}',${JSON.stringify(x.value).replace(/"/g,'&quot;')},${JSON.stringify(x.label).replace(/"/g,'&quot;')})">${esc(x.label)}</button>`).join(''):'<div class="dropdownEmpty">Nog niets opgeslagen</div>'}</div></div>`}
+function toggleDropdown(id){const list=document.getElementById(id+'List');const wasHidden=list.classList.contains('hidden');document.querySelectorAll('.dropdownList').forEach(el=>el.classList.add('hidden'));if(wasHidden)list.classList.remove('hidden')}
+function pickDropdown(id,value,label){document.getElementById(id).value=value;document.getElementById(id+'Label').textContent=label;document.getElementById(id+'List').classList.add('hidden');document.getElementById(id+'Wrap').classList.add('hasSelection');if(id==='savedPlayerSelect')profileSelect(editing);else if(id==='savedPresetSelect')loadCommanderPreset(editing)}
+function profileControls(i){const p=players[i],names=profileNames(),presets=savedProfiles[p.name]?.presets||[],sel=selectionFor(i);if(sel.presetOwner!==p.name){sel.preset='';sel.presetOwner=p.name}return `<div class="profilePanel"><b>Opgeslagen spelers</b><div class="row">${dropdown('savedPlayerSelect','Kies een opgeslagen speler…',names.map(n=>({value:n,label:n})),savedProfiles[p.name]?p.name:'')}</div><div class="row"><button onclick="savePlayerProfile(${i})">＋ Naam opslaan</button>${savedProfiles[p.name]?`<button onclick="removePlayerProfile(${i})">Naam verwijderen</button>`:''}</div><hr><b>Commander-presets voor ${esc(p.name)}</b><p class="hint">Bewaar per speler meerdere decks met hun commandernamen en kleuren. Wisselen verandert geen levens.</p><div class="row">${dropdown('savedPresetSelect','Kies een preset…',presets.map((x,j)=>({value:String(j),label:x.name})),sel.preset)}</div><div class="row"><button onclick="saveCommanderPreset(${i})">＋ Huidige commander(s) opslaan</button>${presets.length?`<button onclick="removeCommanderPreset(${i})">Preset verwijderen</button>`:''}</div><small class="hint">Opgeslagen op dit apparaat in deze browser. Verwijder je browsergegevens, dan kunnen de presets verdwijnen.</small></div>`}
+
+function edit(i){editing=i;modal();}
+function modal(){const previousModal=document.querySelector('#overlay .modal');const previousScroll=previousModal?previousModal.scrollTop:0;const p=players[editing];document.getElementById('overlay').innerHTML=`<div class="modalBack"><div class="modal"><h3>⚙ ${esc(p.name)}</h3>${profileControls(editing)}${artSection(editing)}<label>Spelersnaam<input id="playerName" value="${esc(p.name)}" onchange="players[editing].name=this.value;selectionFor(editing).player='';selectionFor(editing).preset='';modal()"></label><div class="row"><span>Aantal commanders</span><button onclick="cmdCount(-1)">−</button><b>${p.commanders.length}</b><button onclick="cmdCount(1)">+</button></div>${p.commanders.map((c,j)=>`<div class="cmd"><label>Commander ${j+1}<input value="${esc(c.name)}" oninput="players[editing].commanders[${j}].name=this.value"></label><div class="row">${Object.entries(palette).filter(([k])=>k!=='C').map(([k,v])=>`<button class="mana ${c.colors.includes(k)?'on':''}" style="background:${v};color:${k==='W'?'#111':'white'}" onclick="manaToggle(${j},'${k}',this)">${k}</button>`).join('')}</div><small class="selectionSummary" id="selection-${j}">${c.colors.length?'Geselecteerd: '+c.colors.join(' · '):'Kleurloos (geen kleuren geselecteerd)'}</small></div>`).join('')}<div class="bottom"><button class="primary" onclick="closeEdit()">✓ Gereed</button></div></div></div>`;const currentModal=document.querySelector('#overlay .modal');if(currentModal)currentModal.scrollTop=previousScroll}
+function manaToggle(j,k,btn){players[editing].quickColor=null;players[editing].quickHue=undefined;const c=players[editing].commanders[j].colors;c.includes(k)?c.splice(c.indexOf(k),1):c.push(k);btn.classList.toggle('on',c.includes(k));const summary=document.getElementById('selection-'+j);if(summary)summary.textContent=c.length?'Geselecteerd: '+['W','U','B','R','G'].filter(x=>c.includes(x)).join(' · '):'Kleurloos (geen kleuren geselecteerd)'}
+function cmdCount(n){let a=players[editing].commanders;if(n>0&&a.length<5)a.push({name:'Commander '+(a.length+1),colors:[]});if(n<0&&a.length)a.pop();modal()}
+function closeEdit(){editing=null;draw()}
+function settings(){document.getElementById('overlay').innerHTML=`<div class="modalBack"><div class="modal"><h3>Instellingen</h3><div class="artTools"><button onclick="openArtPicker(null)">🖼 Spelerachtergronden beheren</button></div>${tableBackgroundControls()}<p class="hint">Pas spelers aan zonder de huidige levens te wissen.</p>${players.slice(0,count).map((p,i)=>`<button style="margin:3px" onclick="edit(${i})">⚙ ${esc(p.name)}</button>`).join('')}<hr style="border:0;border-top:1px solid #555;margin:16px 0"><div class="row"><button onclick="confirmGameAction('restart')">↻ Game herstarten</button><button onclick="confirmGameAction('new')">＋ Nieuwe game</button></div><p><button onclick="draw()">Sluiten</button></p></div></div>`}
+function confirmGameAction(action){const label=action==='restart'?'Game herstarten':'Nieuwe game';const info=action==='restart'?'Alle levens, poison, commander damage en beschermingen worden gereset. De spelers, commanders en kleuren blijven behouden.':'Je gaat terug naar het beginscherm. Alle spelerposities en namen worden teruggezet naar Speler 1, Speler 2, enzovoort. Opgeslagen spelers en commander-presets blijven bewaard.';document.getElementById('overlay').innerHTML=`<div class="modalBack"><div class="modal"><h3>${label}?</h3><p>${info}</p><div class="row"><button onclick="settings()">Annuleren</button><button class="primary" onclick="performGameAction('${action}')">Bevestigen</button></div></div></div>`}
+function performGameAction(action){active=null;poisonMode=false;angelMode=false;history.length=0;damage={};deathSeen=Array(10).fill(false);deathTransitions=Array(10).fill(null);if(action==='new'){
+  players=Array.from({length:10},(_,i)=>({name:'Speler '+(i+1),life:40,poison:0,cantLose:false,commanders:[{name:'Commander 1',colors:[]}]}));
+  Object.keys(dropdownSelections).forEach(k=>delete dropdownSelections[k]);
+  selectedPresetIndex=-1;editing=null;
+  setup();return
+ }const n=Number(starting==='custom'?custom:starting);players.forEach(p=>{p.life=n;p.poison=0;p.cantLose=false});draw()}
+const EMBLEM=`<img alt="" src="data:image/png;base64,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" class="commanderIcon">`;
+window.addEventListener('resize',()=>{if(stage>0&&editing===null)draw()});setup();
+// A screen wake lock requires a secure context and a user gesture in many browsers.
+let screenWakeLock = null;
+let wakeRequestPending = false;
+async function keepScreenAwake(){
+  if(document.visibilityState !== 'visible' || screenWakeLock || wakeRequestPending || !('wakeLock' in navigator)) return;
+  wakeRequestPending = true;
+  try {
+    screenWakeLock = await navigator.wakeLock.request('screen');
+    screenWakeLock.addEventListener('release',()=>{screenWakeLock=null;},{once:true});
+  } catch(err) { screenWakeLock=null; }
+  finally { wakeRequestPending=false; }
+}
+document.addEventListener('pointerdown',keepScreenAwake,{passive:true});
+document.addEventListener('keydown',keepScreenAwake);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')keepScreenAwake();});
+document.getElementById('tryLandscape').addEventListener('click',async()=>{
+  keepScreenAwake();
+  try {
+    if(document.documentElement.requestFullscreen && !document.fullscreenElement) await document.documentElement.requestFullscreen();
+    if(screen.orientation && screen.orientation.lock) await screen.orientation.lock('landscape');
+  }catch(err){ /* Browser may prohibit locking orientation; rotate manually. */ }
+});
+keepScreenAwake();
+
+
+/* v33: Background images are stored in IndexedDB, not localStorage. */
+let artDB=null;
+function openArtDB(){return new Promise((resolve,reject)=>{if(!('indexedDB' in window))return reject(new Error('IndexedDB niet beschikbaar'));const r=indexedDB.open('commander-life-art-v1',1);r.onupgradeneeded=()=>r.result.createObjectStore('images',{keyPath:'id'});r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+async function loadArtLibrary(){try{artDB=await openArtDB();const tx=artDB.transaction('images','readonly');const req=tx.objectStore('images').getAll();req.onsuccess=()=>{artItems=req.result.map(({id,name})=>({id,name}));artImages=Object.fromEntries(req.result.map(a=>[a.id,a.data]));if(stage===0)setup();else if(editing!==null)modal();else draw()}}catch(e){console.warn('Achtergrondopslag niet beschikbaar',e)}}
+function importArt(playerIndex){const picker=document.createElement('input');picker.type='file';picker.accept='image/*';picker.onchange=async()=>{const file=picker.files?.[0];if(!file)return;if(!artDB){alert('Afbeeldingen opslaan wordt niet ondersteund in deze browser.');return}try{const img=await createImageBitmap(file);const canvas=document.createElement('canvas');const max=1600;const scale=Math.min(1,max/Math.max(img.width,img.height));canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);img.close?.();const data=canvas.toDataURL('image/jpeg',.83);const id='art'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);const name=file.name.replace(/\.[^.]+$/,'').slice(0,45);await new Promise((resolve,reject)=>{const tx=artDB.transaction('images','readwrite');tx.objectStore('images').put({id,name,data});tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)});artItems.push({id,name});artImages[id]=data;if(playerIndex!==null&&players[playerIndex])players[playerIndex].backgroundId=id;if(document.getElementById('artPickerScreen')?.dataset.tableBg==='1'){saveTableBackground(id);delete document.getElementById('artPickerScreen').dataset.tableBg}else if(document.getElementById('artPickerScreen'))renderArtPicker(playerIndex);else if(stage===0)setup();else if(editing!==null)modal();else if(stage===2)settings();else draw()}catch(e){alert('Afbeelding importeren mislukt: '+e.message)}};picker.click()}
+function chooseArt(i,id){players[i].backgroundId=id;closeArtPicker(i)}
+loadArtLibrary();
+</script><script>
+/* Measure actual tile sizes: a 90-degree rotated rectangle must swap width and height. */
+(function(){
+  function fitPlayerArt(){
+    document.querySelectorAll('#app .tile.customArt').forEach(tile=>{
+      const r=tile.getBoundingClientRect();
+      if(!r.width||!r.height)return;
+      tile.style.setProperty('--art-rotated-width',r.height+'px');
+      tile.style.setProperty('--art-rotated-height',r.width+'px');
+    });
+  }
+  const app=document.getElementById('app');
+  const observer=new MutationObserver(()=>requestAnimationFrame(fitPlayerArt));
+  observer.observe(app,{childList:true});
+  window.addEventListener('resize',()=>requestAnimationFrame(fitPlayerArt));
+  window.addEventListener('orientationchange',()=>requestAnimationFrame(fitPlayerArt));
+  requestAnimationFrame(fitPlayerArt);
+})();
+</script></body></html>
+<!-- v17: edge-to-edge balanced player layout for all counts -->
