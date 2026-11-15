@@ -12,6 +12,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.ValueCallback;
 import android.content.Intent;
+import android.content.ActivityNotFoundException;
 import android.net.Uri;
 import java.io.InputStream;
 import java.io.IOException;
@@ -38,6 +39,14 @@ public class MainActivity extends Activity {
     settings.setAllowContentAccess(true);
     settings.setMediaPlaybackRequiresUserGesture(false);
     webView.setWebViewClient(new WebViewClient() {
+      @Override public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+        Uri uri = request.getUrl();
+        if ("appassets.androidplatform.net".equals(uri.getHost())) return false;
+        if ("https".equals(uri.getScheme()) && ("github.com".equals(uri.getHost()) || "objects.githubusercontent.com".equals(uri.getHost()))) {
+          try { startActivity(new Intent(Intent.ACTION_VIEW, uri)); } catch (ActivityNotFoundException ignored) { }
+        }
+        return true;
+      }
       @Override public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
         Uri uri = request.getUrl();
         if (!"appassets.androidplatform.net".equals(uri.getHost())) return null;
