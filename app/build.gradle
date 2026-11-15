@@ -4,6 +4,21 @@ android {
     namespace "com.commanderlifecounter.app"
     compileSdk 35
     defaultConfig { applicationId "com.commanderlifecounter.app"; minSdk 26; targetSdk 35; versionCode 46; versionName "46" }
-    buildTypes { release { minifyEnabled false } }
+    signingConfigs {
+        if (System.getenv("CLC_KEYSTORE_PATH")) {
+            clc {
+                storeFile file(System.getenv("CLC_KEYSTORE_PATH"))
+                storePassword System.getenv("CLC_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("CLC_KEY_ALIAS")
+                keyPassword System.getenv("CLC_KEY_PASSWORD")
+            }
+        }
+    }
+    buildTypes {
+        debug {
+            if (System.getenv("CLC_KEYSTORE_PATH")) signingConfig signingConfigs.clc
+        }
+        release { minifyEnabled false }
+    }
     compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
 }
