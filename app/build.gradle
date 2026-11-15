@@ -3,7 +3,7 @@ plugins { id "com.android.application" }
 android {
     namespace "com.commanderlifecounter.app"
     compileSdk 35
-    defaultConfig { applicationId "com.commanderlifecounter.app"; minSdk 26; targetSdk 35; versionCode 47; versionName "47" }
+    defaultConfig { applicationId "com.commanderlifecounter.app"; minSdk 26; targetSdk 35; versionCode 48; versionName "48" }
     signingConfigs {
         if (System.getenv("CLC_KEYSTORE_PATH")) {
             clc {
